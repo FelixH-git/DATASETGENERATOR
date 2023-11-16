@@ -57,6 +57,10 @@ minimap = cv2.imread(path_to_minimap)
 minimap = cv2.cvtColor(minimap, cv2.COLOR_RGB2RGBA)
 minimap_base = cv2.imread(path_to_minimap)
 minimap_base = cv2.cvtColor(minimap, cv2.COLOR_RGB2RGBA)
+minimap_base = cv2.resize(minimap_base, (415, 415))
+    
+minimap = cv2.resize(minimap, (416, 416))
+
 pings = os.listdir(r"C:\Users\metal\Desktop\latest\DATASETGENERATOR\out")
 total_champs = os.listdir(r"C:\Users\metal\Desktop\latest\DATASETGENERATOR\blue_icons\blue_icons")
 
@@ -82,17 +86,17 @@ for j in range(1000):
             try:
                 r = random.randint(0, len(icons_blue))
                 random_champ = icons_blue[r][1]
-                y_offset = random.randint(20, minimap.shape[0]- 50)
-                x_offset = random.randint(20, minimap.shape[1]- 50)
-                y1,y2 = y_offset, y_offset + random_champ.shape[0]
-                x1,x2 = x_offset, x_offset + random_champ.shape[1]
+                b_y_offset = random.randint(40, minimap.shape[0] - 40)
+                b_x_offset = random.randint(40, minimap.shape[1] - 40)
+                by1,by2 = b_y_offset, b_y_offset + random_champ.shape[0]
+                bx1,bx2 = b_x_offset, b_x_offset + random_champ.shape[1]
                 alpha_s = random_champ[:, :, 3] / 255.0
                 alpha_l = 1.0 - alpha_s
-                #cv2.rectangle(minimap, (x_offset, y_offset), (x_offset+random_champ.shape[1], y_offset + random_champ.shape[0]), (255,255,255), 1)
-                f.write(f"{r} {x_offset / 415} {y_offset / 415} {(x_offset + random_champ.shape[1]) / 415} {(y_offset + random_champ.shape[0]) / 415}\n")
+                #cv2.rectangle(minimap, (b_x_offset, b_y_offset), (b_x_offset+random_champ.shape[1], b_y_offset + random_champ.shape[0]), (255,255,255), 1)
+                f.write(f"{r} {(b_x_offset + (random_champ.shape[1] / 2)) / 416} {(b_y_offset + (random_champ.shape[0] / 2)) / 416} {(random_champ.shape[1]) / 416} {(random_champ.shape[0]) / 416}\n")
                 #cv2.putText(minimap, icons_red[r][0], (x_offset, y_offset-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
                 for c in range(0,3):
-                    minimap[y1:y2, x1:x2, c] = (alpha_s * random_champ[:, :, c] + alpha_l * minimap[y1:y2, x1:x2, c])
+                    minimap[by1:by2, bx1:bx2, c] = (alpha_s * random_champ[:, :, c] + alpha_l * minimap[by1:by2, bx1:bx2, c])
                     
             except:
                 print("", end="")
@@ -102,18 +106,20 @@ for j in range(1000):
     for champion, icon in icons_red:
         for i in range(5):
             try:
-                r = random.randint(0, len(icons_red))
-                random_champ = icons_red[r][1]
-                y_offset = random.randint(20, minimap.shape[0] - 50)
-                x_offset = random.randint(20, minimap.shape[1] - 50)
-                y1,y2 = y_offset, y_offset + random_champ.shape[0]
-                x1,x2 = x_offset, x_offset + random_champ.shape[1]
-                alpha_s = random_champ[:, :, 3] / 255.0
+                Ar = random.randint(0, len(icons_red))
+                Arandom_champ = icons_red[Ar][1]
+                Ay_offset = random.randint(40, minimap.shape[0] - 40)
+                Ax_offset = random.randint(40, minimap.shape[1] - 40)
+                Ay1,Ay2 = Ay_offset, Ay_offset + Arandom_champ.shape[0]
+                Ax1,Ax2 = Ax_offset, Ax_offset + Arandom_champ.shape[1]
+                alpha_s = Arandom_champ[:, :, 3] / 255.0
                 alpha_l = 1.0 - alpha_s
-                f.write(f"{r} {x_offset / 415} {y_offset / 415} {(x_offset + random_champ.shape[1]) / 415} {(y_offset + random_champ.shape[0]) / 415}\n")
-                #cv2.putText(minimap, icons_red[r][0], (x_offset, y_offset-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+                f.write(f"{Ar} {(Ax_offset + (Arandom_champ.shape[1] / 2)) / 416} {(Ay_offset + (Arandom_champ.shape[0] / 2)) / 416} {(Arandom_champ.shape[1]) / 416} {(Arandom_champ.shape[0]) / 416}\n")
+                
+                #cv2.rectangle(minimap, (Ax_offset, Ay_offset), (Ax_offset+random_champ.shape[1], Ay_offset + random_champ.shape[0]), (255,255,255), 1)
+                
                 for c in range(0,3):
-                    minimap[y1:y2, x1:x2, c] = (alpha_s * random_champ[:, :, c] + alpha_l * minimap[y1:y2, x1:x2, c])
+                    minimap[Ay1:Ay2, Ax1:Ax2, c] = (alpha_s * Arandom_champ[:, :, c] + alpha_l * minimap[Ay1:Ay2, Ax1:Ax2, c])
                 
 
             except:
@@ -125,11 +131,7 @@ for j in range(1000):
     if j % 5 == 0:
         cv2.imwrite(rf"C:\Users\metal\Desktop\latest\DATASETGENERATOR\dataset\images\val\frame_{j}.png",minimap)
     minimap = cv2.imread(path_to_minimap)
+    minimap = cv2.resize(minimap, (416, 416))
     f.close()
-    
 
-    
-minimap = cv2.resize(minimap, (415, 415))
-cv2.imshow("data", minimap)
-cv2.waitKey(0)
 
